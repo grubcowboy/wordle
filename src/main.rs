@@ -13,7 +13,7 @@ fn main() {
     let answer: usize = rng.gen_range(0..words.len());
     println!("{}", answer);
 
-    let solution = &words[answer];
+    let solution: &str = &words[answer];
     println!("{}", solution);
 
     let mut attempt_count = 0;
@@ -35,10 +35,6 @@ fn main() {
     } else {
         println!("You win!");
     }
-
-    // TODO:
-    // * Don't hard code the word
-    // * Add basic UI
 }
 
 fn get_words(length: u8) -> Vec<String> {
@@ -47,21 +43,17 @@ fn get_words(length: u8) -> Vec<String> {
     let mut words = vec![];
 
     for line in reader.lines() {
-        //println!("{}", line.unwrap());
         let word = line.unwrap();
         if word.trim().len() as u8 == length {
             words.push(word);
         }
     }
-
-    // TODO: Finish
     words
 }
 
-fn check_answer(sol: &String, s: String) -> bool {
-    let answer = sol.to_string();
-    println!("{}", answer);
+fn check_answer(sol: &str, s: String) -> bool {
+    println!("{}", sol);
     let s = s.trim();
 
-    answer == s
+    sol == s
 }
