@@ -1,6 +1,6 @@
 use rand::{thread_rng, Rng};
 use std::fs::File;
-use std::io::{self, prelude::*, BufReader};
+use std::io::{self, BufRead, BufReader};
 
 const WORD_LENGTH: u8 = 5;
 
@@ -10,7 +10,7 @@ fn main() {
     println!("words.len(): {}", words.len());
 
     let mut rng = thread_rng();
-    let answer: usize = rng.gen_range(0, words.len());
+    let answer: usize = rng.gen_range(0..words.len());
     println!("{}", answer);
 
     let solution = &words[answer];
@@ -55,7 +55,7 @@ fn get_words(length: u8) -> Vec<String> {
     }
 
     // TODO: Finish
-    return words;
+    words
 }
 
 fn check_answer(sol: &String, s: String) -> bool {
