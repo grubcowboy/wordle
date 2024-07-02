@@ -1,33 +1,53 @@
+const guessInput = document.querySelector('#guess-input');
 
 
-// TODO: check if word matches
-function isMatch(guess) {
-    // TODO: random word for answer
-    const answer = 'world';
+let guesses = 0;
+let winner = false;
+// TODO: attach subsequent response to corresponding rows
+let row;
+
+guessInput.addEventListener("submit", e => {
+    e.preventDefault();
+    const input = document.querySelector('#input');
     // TODO: check to see if it is a valid word from dictionary
-    if (guess.match(/[\d_\W]/)) alert('Please enter a valid word');
+    if (input.value.match(/[\d_\W]/)) alert('Please enter a valid word');
     else {
-        const guessChars = guess.split('');
-        const letters = document.getElementsByClassName('first');
-
-        if (guess === answer) {
-            for (let i = 0; i < letters.length; i++) {
-                letters[i].style.backgroundColor = '#39ff14';
-                letters[i].innerHTML = guessChars[i].toUpperCase();
-            };
-        } else {
-            for (let i = 0; i < letters.length; i++) {
-                const char = guessChars[i];
-                letters[i].style.backgroundColor = isLetterMatch(answer, char, i);
-                letters[i].innerHTML = guessChars[i].toUpperCase();
-            };
+        guesses++;
+        console.log(guesses);
+        console.log(input.value);
+        if (guesses < 6) {
+            isMatch(input.value, guesses);
         }
     }
+    guessInput.reset();
+});
+
+function isMatch(guess, attempt) {
+    // TODO: random word for answer
+    const answer = 'world';
+
+    const guessChars = guess.split('');
+    console.log('getRow: ', getRow(attempt));
+    const letters = document.getElementsByClassName(getRow(attempt));
+
+    if (guess === answer) {
+        for (let i = 0; i < letters.length; i++) {
+            letters[i].style.backgroundColor = '#39ff14';
+            letters[i].innerHTML = guessChars[i].toUpperCase();
+        };
+    } else {
+        console.log('letters: ', letters);
+        for (let i = 0; i < letters.length; i++) {
+            const char = guessChars[i];
+            letters[i].style.backgroundColor = isLetterMatch(answer, char, i);
+            letters[i].innerHTML = guessChars[i].toUpperCase();
+        };
+    };
 
 
 }
 
-isMatch('plane');
+// isMatch('otter');
 
 function isLetterMatch(answerString, guessChar, index) {
     const answerChars = [...answerString];
@@ -47,7 +67,30 @@ function isLetterMatch(answerString, guessChar, index) {
             return '#ffff33';
         }
     }
-}
+    return '';
+};
 
+function getRow(row) {
 
+    let rowName = '';
+    switch (row) {
+        case 1:
+            rowName = 'one';
+            break;
+        case 2:
+            rowName = 'two';
+            break;
+        case 3:
+            rowName = 'three';
+            break;
+        case 4:
+            rowName = 'four';
+            break;
+        case 5:
+            rowName = 'five';
+            break;
+    }
+
+    return rowName;
+};
 
