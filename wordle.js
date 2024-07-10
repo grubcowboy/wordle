@@ -1,6 +1,7 @@
 const guessInput = document.querySelector('#guess-input');
 
-
+// TODO: random word for answer
+const answer = 'world';
 let guesses = 0;
 let winner = false;
 // TODO: attach subsequent response to corresponding rows
@@ -8,6 +9,7 @@ let row;
 
 guessInput.addEventListener("submit", e => {
     e.preventDefault();
+
     const input = document.querySelector('#input');
     // TODO: check to see if it is a valid word from dictionary
     if (input.value.match(/[\d_\W]/)) alert('Please enter a valid word');
@@ -16,15 +18,15 @@ guessInput.addEventListener("submit", e => {
         console.log(guesses);
         console.log(input.value);
         if (guesses < 6) {
-            isMatch(input.value, guesses);
+            isMatch(answer, input.value, guesses);
         }
     }
     guessInput.reset();
 });
 
-function isMatch(guess, attempt) {
-    // TODO: random word for answer
-    const answer = 'world';
+function isMatch(answer, guess, attempt) {
+
+    const answerChars = [...answer];
 
     const guessChars = guess.split('');
     console.log('getRow: ', getRow(attempt));
@@ -36,39 +38,43 @@ function isMatch(guess, attempt) {
             letters[i].innerHTML = guessChars[i].toUpperCase();
         };
     } else {
-        console.log('letters: ', letters);
-        for (let i = 0; i < letters.length; i++) {
-            const char = guessChars[i];
-            letters[i].style.backgroundColor = isLetterMatch(answer, char, i);
-            letters[i].innerHTML = guessChars[i].toUpperCase();
-        };
+        const answerMap = {};
+        answerChars.forEach(char => {
+            if (answerMap[char]) {
+                answerMap[char]++;
+            } else {
+                answerMap[char] = 1;
+            }
+        });
+        isGreen(answerChars, guessChars, answerMap, letters);
+        isYellow(answerChars, guessChars, answerMap, letters);
     };
 
 
 }
 
-// isMatch('otter');
+function isGreen(answerChars, guessChars, answerMap, letters) {
 
-function isLetterMatch(answerString, guessChar, index) {
-    const answerChars = [...answerString];
-    const answerMap = {};
-    answerChars.forEach(char => {
-        if (answerMap[char]) {
-            answerMap[char]++;
-        } else {
-            answerMap[char] = 1;
+    for (let i = 0; i < letters.length; i++) {
+        letters[i].innerHTML = guessChars[i].toUpperCase();
+        console.log(`AnswerMap[${answerChars[i]}] BEFORE: ${answerMap[answerChars[i]]}`)
+        if (answerChars[i] === guessChars[i]) {
+            letters[i].style.backgroundColor = '#39ff14';
+            answerMap[answerChars[i]]--;
+            console.log(`AnswerMap[${answerChars[i]}] AFTER: ${answerMap[answerChars[i]]}`)
         }
-    });
-    if (answerMap[guessChar]) {
-        answerMap[guessChar] -= 1;
-        if (answerChars[index] === guessChar) {
-            return '#39ff14';
-        } else {
-            return '#ffff33';
+    };
+}
+
+function isYellow(answerChars, guessChars, answerMap, letters) {
+    for (let i = 0; i < letters.length; i++) {
+        console.log(`answerMap[${guessChars[i]}]: ${answerMap[guessChars[i]]}`);
+        if (answerMap[guessChars[i]] > 0) {
+            answerMap[guessChars[i]]--;
+            letters[i].style.backgroundColor = '#ffff33';
         }
     }
-    return '';
-};
+}
 
 function getRow(row) {
 
