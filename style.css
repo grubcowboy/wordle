@@ -1,15 +1,24 @@
-body {
-    background-color: lightslategray;
+:root {
+    --yellow: #FFBF00;
+    --green: #00A36C;
+    --gray: #899499;
+    --background: #E5E4E2;
+
 }
 
-svg {
+body {
+    background-color: var(--background);
+}
+
+/* svg {
     display: block;
     margin: 2rem auto;
-}
+} */
 
 #container {
     background-color: white;
     margin: 5rem auto;
+    margin-bottom: 2.5rem;
     border: solid;
     width: 12.5rem;
 }
@@ -48,4 +57,22 @@ td {
     width: 1.5rem;
     height: 1.5rem;
     text-align: center;
+}
+
+.row {
+    /* border: red solid; */
+    width: fit-content;
+    margin: 0 auto;
+    background-color: white;
+    display: flex;
+}
+
+p {
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 1.5px solid;
+    text-align: center;
+    margin: 1px;
+    padding: 1px;
+    line-height: 1.5rem;
 }

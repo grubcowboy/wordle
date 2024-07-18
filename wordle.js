@@ -1,42 +1,62 @@
-const guessInput = document.querySelector('#guess-input');
+// Git Changes: added async function to fetch words, moved the event listener and global vars inside the async
+// TODO: Make letter responsive keyboard
+const fetchWords = async () => {
+    try {
+        const res = await fetch('https://grubcowboy.github.io/wordList.json');
+        const data = await res.json();
+        let rand = Math.floor(Math.random() * data.words.length);
+        let answer = data.words[rand];
 
-// TODO: random word for answer
-const answer = 'world';
-let guesses = 0;
-let winner = false;
-// TODO: attach subsequent response to corresponding rows
-let row;
+        const keys = document.querySelectorAll('p');
+        keys.forEach(key => {
+            key.innerHTML = key.textContent.toUpperCase();
+        });
 
-guessInput.addEventListener("submit", e => {
-    e.preventDefault();
+        const guessInput = document.querySelector('#guess-input');
 
-    const input = document.querySelector('#input');
-    // TODO: check to see if it is a valid word from dictionary
-    if (input.value.match(/[\d_\W]/)) alert('Please enter a valid word');
-    else {
-        guesses++;
-        console.log(guesses);
-        console.log(input.value);
-        if (guesses < 6) {
-            isMatch(answer, input.value, guesses);
-        }
+        let guesses = 0;
+        let winner = false;
+        let row;
+
+        guessInput.addEventListener("submit", e => {
+            e.preventDefault();
+
+            const input = document.querySelector('#input');
+            // TODO: check to see if it is a valid word from dictionary
+            if (input.value.match(/[\d_\W]/)) alert('Please enter a valid word');
+            else {
+                guesses++;
+                if (guesses < 6) {
+                    isMatch(answer, input.value, guesses);
+                }
+            }
+            guessInput.reset();
+        });
+    } catch (err) {
+        console.log(err);
     }
-    guessInput.reset();
-});
+};
+fetchWords();
+
 
 function isMatch(answer, guess, attempt) {
 
     const answerChars = [...answer];
 
     const guessChars = guess.split('');
-    console.log('getRow: ', getRow(attempt));
     const letters = document.getElementsByClassName(getRow(attempt));
+
+
 
     if (guess === answer) {
         for (let i = 0; i < letters.length; i++) {
-            letters[i].style.backgroundColor = '#39ff14';
+            letters[i].style.backgroundColor = 'var(--green)';
             letters[i].innerHTML = guessChars[i].toUpperCase();
         };
+        guessChars.forEach(char => {
+            const letter = document.querySelector(`#${char}`);
+            letter.style.backgroundColor = 'var(--green)';
+        });
     } else {
         const answerMap = {};
         answerChars.forEach(char => {
@@ -45,6 +65,10 @@ function isMatch(answer, guess, attempt) {
             } else {
                 answerMap[char] = 1;
             }
+        });
+        guessChars.forEach(char => {
+            const letter = document.querySelector(`#${char}`);
+            letter.style.backgroundColor = 'var(--gray)';
         });
         isGreen(answerChars, guessChars, answerMap, letters);
         isYellow(answerChars, guessChars, answerMap, letters);
@@ -57,21 +81,25 @@ function isGreen(answerChars, guessChars, answerMap, letters) {
 
     for (let i = 0; i < letters.length; i++) {
         letters[i].innerHTML = guessChars[i].toUpperCase();
-        console.log(`AnswerMap[${answerChars[i]}] BEFORE: ${answerMap[answerChars[i]]}`)
+        letters[i].style.backgroundColor = 'var(--gray)';
         if (answerChars[i] === guessChars[i]) {
-            letters[i].style.backgroundColor = '#39ff14';
+            letters[i].style.backgroundColor = 'var(--green)';
+            letters[i].className += ' green';
             answerMap[answerChars[i]]--;
-            console.log(`AnswerMap[${answerChars[i]}] AFTER: ${answerMap[answerChars[i]]}`)
+            let letter = document.querySelector(`#${guessChars[i]}`);
+            letter.style.backgroundColor = 'var(--green)';
         }
     };
 }
 
 function isYellow(answerChars, guessChars, answerMap, letters) {
     for (let i = 0; i < letters.length; i++) {
-        console.log(`answerMap[${guessChars[i]}]: ${answerMap[guessChars[i]]}`);
-        if (answerMap[guessChars[i]] > 0) {
+        if (answerMap[guessChars[i]] > 0 && !letters[i].classList.contains('green')) {
             answerMap[guessChars[i]]--;
-            letters[i].style.backgroundColor = '#ffff33';
+            letters[i].style.backgroundColor = 'var(--yellow)';
+            letters[i].className += " yellow";
+            let letter = document.querySelector(`#${guessChars[i]}`);
+            letter.style.backgroundColor = 'var(--yellow)';
         }
     }
 }
