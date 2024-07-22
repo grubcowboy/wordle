@@ -1,11 +1,14 @@
-// Git Changes: added async function to fetch words, moved the event listener and global vars inside the async
-// TODO: Make letter responsive keyboard
+// TODO: Fix mobile version UI
+// TODO: Add guess count logic/winning state
+// TODO: Host on GHPages
+
 const fetchWords = async () => {
     try {
         const res = await fetch('https://grubcowboy.github.io/wordList.json');
         const data = await res.json();
         let rand = Math.floor(Math.random() * data.words.length);
         let answer = data.words[rand];
+        console.log(answer);
 
         const keys = document.querySelectorAll('p');
         keys.forEach(key => {
@@ -23,8 +26,9 @@ const fetchWords = async () => {
 
             const input = document.querySelector('#input');
             // TODO: check to see if it is a valid word from dictionary
-            if (input.value.match(/[\d_\W]/)) alert('Please enter a valid word');
-            else {
+            if (input.value.match(/[\d_\W]/) || data.words.filter(word => word === input.value).length === 0) {
+                alert('Please enter a valid word');
+            } else {
                 guesses++;
                 if (guesses < 6) {
                     isMatch(answer, input.value, guesses);
@@ -56,6 +60,7 @@ function isMatch(answer, guess, attempt) {
         guessChars.forEach(char => {
             const letter = document.querySelector(`#${char}`);
             letter.style.backgroundColor = 'var(--green)';
+            // letter.style.fontWeight = 'bold';
         });
     } else {
         const answerMap = {};
