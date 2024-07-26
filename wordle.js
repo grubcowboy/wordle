@@ -1,86 +1,121 @@
-// TODO: Fix mobile version UI
-// TODO: Add guess count logic/winning state
-// TODO: Host on GHPages
+const form = document.querySelector('#guess-input');
+const btn = document.querySelector('#btn');
+const table = document.querySelector('#attempts');
+const tbody = document.querySelector('#attempts').querySelector('tbody');
+const keys = document.querySelectorAll('p');
+const input = document.createElement('input');
+
+
+class Wordle {
+    constructor(words) {
+        this.words = words;
+        this.reset();
+    }
+
+    newWord() {
+        let rand = Math.floor(Math.random() * this.words.length);
+        this.answer = this.words[rand];
+        console.log(this.answer);
+    }
+
+    reset() {
+        resetGame();
+        this.guesses = 0;
+        this.finished = false;
+        this.newWord();
+    }
+
+    isMatch(guess) {
+        const answerChars = [...this.answer];
+        const guessChars = guess.split('');
+        const letters = document.getElementsByClassName(getRow(this.guesses));
+
+        // Correct answer
+        if (guess === this.answer) {
+            for (let i = 0; i < letters.length; i++) {
+                letters[i].style.backgroundColor = 'var(--green)';
+                letters[i].innerHTML = guessChars[i].toUpperCase();
+            };
+
+            guessChars.forEach(char => {
+                const keyboard = document.querySelector(`#${char}`);
+                keyboard.style.backgroundColor = 'var(--green)';
+            });
+
+            return true;
+        } else {
+            const answerMap = {};
+
+            answerChars.forEach(char => {
+                if (answerMap[char]) {
+                    answerMap[char]++;
+                } else {
+                    answerMap[char] = 1;
+                }
+            });
+
+            guessChars.forEach(char => {
+                const letter = document.querySelector(`#${char}`);
+                letter.style.backgroundColor = 'var(--gray)';
+            });
+
+            isGreen(answerChars, guessChars, answerMap, letters);
+            isYellow(answerChars, guessChars, answerMap, letters);
+
+            return false;
+        };
+    }
+
+}
 
 const fetchWords = async () => {
     try {
         const res = await fetch('https://grubcowboy.github.io/wordList.json');
         const data = await res.json();
-        let rand = Math.floor(Math.random() * data.words.length);
-        let answer = data.words[rand];
-        console.log(answer);
-
-        const keys = document.querySelectorAll('p');
-        keys.forEach(key => {
-            key.innerHTML = key.textContent.toUpperCase();
-        });
-
-        const guessInput = document.querySelector('#guess-input');
-
-        let guesses = 0;
-        let winner = false;
-        let row;
-
-        guessInput.addEventListener("submit", e => {
-            e.preventDefault();
-
-            const input = document.querySelector('#input');
-            // TODO: check to see if it is a valid word from dictionary
-            if (input.value.match(/[\d_\W]/) || data.words.filter(word => word === input.value).length === 0) {
-                alert('Please enter a valid word');
-            } else {
-                guesses++;
-                if (guesses < 6) {
-                    isMatch(answer, input.value, guesses);
-                }
-            }
-            guessInput.reset();
-        });
+        return data.words;
     } catch (err) {
         console.log(err);
+        return [];
     }
 };
-fetchWords();
 
+const init = async () => {
+    const words = await fetchWords();
 
-function isMatch(answer, guess, attempt) {
+    const game = new Wordle(words);
 
-    const answerChars = [...answer];
+    form.addEventListener("submit", e => {
+        e.preventDefault();
 
-    const guessChars = guess.split('');
-    const letters = document.getElementsByClassName(getRow(attempt));
-
-
-
-    if (guess === answer) {
-        for (let i = 0; i < letters.length; i++) {
-            letters[i].style.backgroundColor = 'var(--green)';
-            letters[i].innerHTML = guessChars[i].toUpperCase();
+        if (game.finished) {
+            game.reset();
+            return;
         };
-        guessChars.forEach(char => {
-            const letter = document.querySelector(`#${char}`);
-            letter.style.backgroundColor = 'var(--green)';
-            // letter.style.fontWeight = 'bold';
-        });
-    } else {
-        const answerMap = {};
-        answerChars.forEach(char => {
-            if (answerMap[char]) {
-                answerMap[char]++;
-            } else {
-                answerMap[char] = 1;
+
+        if (!input.value.match(/[\d_\W]/) && words.filter(word => word === input.value).length !== 0) {
+            game.guesses++;
+            if (game.guesses < 7) {
+                if (game.isMatch(input.value)) {
+                    game.finished = true;
+                }
+
+                if (game.guesses === 6) {
+                    game.finished = true;
+                }
+
+                if (game.finished) {
+                    input.remove();
+                    btn.innerHTML = 'REPLAY';
+                }
             }
-        });
-        guessChars.forEach(char => {
-            const letter = document.querySelector(`#${char}`);
-            letter.style.backgroundColor = 'var(--gray)';
-        });
-        isGreen(answerChars, guessChars, answerMap, letters);
-        isYellow(answerChars, guessChars, answerMap, letters);
-    };
+        }
+        form.reset();
+    });
+};
+
+init();
 
 
-}
 
 function isGreen(answerChars, guessChars, answerMap, letters) {
 
@@ -128,8 +163,38 @@ function getRow(row) {
         case 5:
             rowName = 'five';
             break;
+        case 6:
+            rowName = 'six';
+            break;
     }
 
     return rowName;
 };
 
+function addRows() {
+    for (let x = 0; x < 6; x++) {
+        var row = tbody.insertRow();
+        for (let i = 0; i < 5; i++) {
+            const cell = row.insertCell();
+            cell.setAttribute('class', `${getRow(x + 1)}`);
+        }
+    }
+
+}
+
+function resetGame() {
+    let rowCount = table.rows.length;
+    for (let x = 0; x < rowCount; x++) {
+        table.deleteRow(0);
+    }
+    keys.forEach(key => {
+        key.innerHTML = key.textContent.toUpperCase();
+        key.style.backgroundColor = 'white';
+    });
+    input.setAttribute('id', 'input');
+    input.setAttribute('autocomplete', 'off');
+    form.insertBefore(input, form.childNodes[0]);
+    form.reset();
+    btn.innerHTML = 'CHECK';
+    addRows();
+}

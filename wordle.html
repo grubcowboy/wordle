@@ -9,88 +9,48 @@
 </head>
 
 <body>
-    <div id="outer-container">
-        <div id="container">
-            <h1 id="title">WORDLE</h1>
-            <form id="guess-input">
-                <input id="input" type="text" size="12" minlength="5" maxlength="5" autocomplete="off"
-                    style="text-transform: uppercase;" required />
-                <button class="glass" type="submit">CHECK</button>
-            </form>
-            <table id="attempts">
-                <tbody>
-                    <tr>
-                        <td class="one"></td>
-                        <td class="one"></td>
-                        <td class="one"></td>
-                        <td class="one"></td>
-                        <td class="one"></td>
-                    </tr>
-                    <tr>
-                        <td class="two"></td>
-                        <td class="two"></td>
-                        <td class="two"></td>
-                        <td class="two"></td>
-                        <td class="two"></td>
-                    </tr>
-                    <tr>
-                        <td class="three"></td>
-                        <td class="three"></td>
-                        <td class="three"></td>
-                        <td class="three"></td>
-                        <td class="three"></td>
-                    </tr>
-                    <tr>
-                        <td class="four"></td>
-                        <td class="four"></td>
-                        <td class="four"></td>
-                        <td class="four"></td>
-                        <td class="four"></td>
-                    </tr>
-                    <tr>
-                        <td class="five"></td>
-                        <td class="five"></td>
-                        <td class="five"></td>
-                        <td class="five"></td>
-                        <td class="five"></td>
-                    </tr>
-                </tbody>
-            </table>
+    <div id="container">
+        <h1 id="title">WORDLE</h1>
+        <form id="guess-input">
+            <button id="btn" class="glass" type="submit">CHECK</button>
+        </form>
+        <table id="attempts">
+            <tbody></tbody>
+        </table>
+    </div>
+    <div id="rows">
+        <!-- TODO: Make keys and ids programmatically -->
+        <div id="keys-one" class="row">
+            <p id="q">q</p>
+            <p id="w">w</p>
+            <p id="e">e</p>
+            <p id="r">r</p>
+            <p id="t">t</p>
+            <p id="y">y</p>
+            <p id="u">u</p>
+            <p id="i">i</p>
+            <p id="o">o</p>
+            <p id="p">p</p>
         </div>
-        <div id="rows">
-            <!-- TODO: Make keys and ids programmatically -->
-            <div id="keys-one" class="row">
-                <p id="q">q</p>
-                <p id="w">w</p>
-                <p id="e">e</p>
-                <p id="r">r</p>
-                <p id="t">t</p>
-                <p id="y">y</p>
-                <p id="u">u</p>
-                <p id="i">i</p>
-                <p id="o">o</p>
-                <p id="p">p</p>
-            </div>
-            <div id="keys-two" class="row">
-                <p id="a">a</p>
-                <p id="s">s</p>
-                <p id="d">d</p>
-                <p id="f">f</p>
-                <p id="g">g</p>
-                <p id="h">h</p>
-                <p id="j">j</p>
-                <p id="k">k</p>
-                <p id="l">l</p>
-            </div>
-            <div id="keys-three" class="row">
-                <p id="z">z</p>
-                <p id="x">x</p>
-                <p id="c">c</p>
-                <p id="v">v</p>
-                <p id="b">b</p>
-                <p id="n">n</p>
-                <p id="m">m</p>
-            </div>
+        <div id="keys-two" class="row">
+            <p id="a">a</p>
+            <p id="s">s</p>
+            <p id="d">d</p>
+            <p id="f">f</p>
+            <p id="g">g</p>
+            <p id="h">h</p>
+            <p id="j">j</p>
+            <p id="k">k</p>
+            <p id="l">l</p>
+        </div>
+        <div id="keys-three" class="row">
+            <p id="z">z</p>
+            <p id="x">x</p>
+            <p id="c">c</p>
+            <p id="v">v</p>
+            <p id="b">b</p>
+            <p id="n">n</p>
+            <p id="m">m</p>
         </div>
     </div>
 </body>
