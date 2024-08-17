@@ -70,7 +70,7 @@ class Wordle {
 
 const fetchWords = async () => {
     try {
-        const res = await fetch('https://grubcowboy.github.io/wordList.json');
+        const res = await fetch('https://grubcowboy.github.io/wordle/wordList.json');
         const data = await res.json();
         return data.words;
     } catch (err) {
